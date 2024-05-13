@@ -1,14 +1,14 @@
-public class StringListImpl implements StringList {
-    private String[] elements;
+public class IntegerListImpl implements IntegerList {
+    private Integer[] elements;
     private int size;
 
-    public StringListImpl(int capacity) {
-        elements = new String[capacity];
+    public IntegerListImpl(int capacity) {
+        elements = new Integer[capacity];
         size = 0;
     }
 
     @Override
-    public String add(String item) {
+    public Integer add(Integer item) {
         if (item == null) throw new IllegalArgumentException("Null values are not allowed");
         if (size >= elements.length) throw new IllegalStateException("List is full");
         elements[size++] = item;
@@ -16,7 +16,7 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public String add(int index, String item) {
+    public Integer add(int index, Integer item) {
         if (item == null) throw new IllegalArgumentException("Null values are not allowed");
         if (index > size || index < 0) throw new IndexOutOfBoundsException("Index out of bounds");
         if (size >= elements.length) throw new IllegalStateException("List is full");
@@ -27,16 +27,16 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public String set(int index, String item) {
+    public Integer set(int index, Integer item) {
         if (item == null) throw new IllegalArgumentException("Null values are not allowed");
         if (index >= size || index < 0) throw new IndexOutOfBoundsException("Index out of bounds");
-        String oldItem = elements[index];
+        Integer oldItem = elements[index];
         elements[index] = item;
         return oldItem;
     }
 
     @Override
-    public String remove(String item) {
+    public Integer remove(Integer item) {
         if (item == null) throw new IllegalArgumentException("Null values are not allowed");
         for (int i = 0; i < size; i++) {
             if (item.equals(elements[i])) {
@@ -47,21 +47,21 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public String remove(int index) {
+    public Integer remove(int index) {
         if (index >= size || index < 0) throw new IndexOutOfBoundsException("Index out of bounds");
-        String item = elements[index];
+        Integer item = elements[index];
         System.arraycopy(elements, index + 1, elements, index, size - index - 1);
         elements[--size] = null; // prevent memory leak
         return item;
     }
 
     @Override
-    public boolean contains(String item) {
+    public boolean contains(Integer item) {
         return indexOf(item) != -1;
     }
 
     @Override
-    public int indexOf(String item) {
+    public int indexOf(Integer item) {
         if (item == null) return -1;
         for (int i = 0; i < size; i++) {
             if (item.equals(elements[i])) {
@@ -72,7 +72,7 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public int lastIndexOf(String item) {
+    public int lastIndexOf(Integer item) {
         if (item == null) return -1;
         for (int i = size - 1; i >= 0; i--) {
             if (item.equals(elements[i])) {
@@ -83,13 +83,13 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public String get(int index) {
+    public Integer get(int index) {
         if (index >= size || index < 0) throw new IndexOutOfBoundsException("Index out of bounds");
         return elements[index];
     }
 
     @Override
-    public boolean equals(StringList otherList) {
+    public boolean equals(IntegerList otherList) {
         if (otherList == null) throw new IllegalArgumentException("Cannot compare to null");
         if (this.size() != otherList.size()) return false;
         for (int i = 0; i < size; i++) {
@@ -119,9 +119,27 @@ public class StringListImpl implements StringList {
     }
 
     @Override
-    public String[] toArray() {
-        String[] array = new String[size];
+    public Integer[] toArray() {
+        Integer[] array = new Integer[size];
         System.arraycopy(elements, 0, array, 0, size);
         return array;
     }
+
+    protected int binarySearch(Integer item) {
+        int low = 0, high = size - 1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            Integer midVal = elements[mid];
+            int cmp = midVal.compareTo(item);
+            if (cmp < 0) {
+                low = mid + 1;
+            } else if (cmp > 0) {
+                high = mid - 1;
+            } else {
+                return mid; // элемент найден
+            }
+        }
+        return -1; // элемент не найден
+    }
 }
+
